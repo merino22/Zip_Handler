@@ -7,20 +7,23 @@
 #include "endCentralDir.h"
 #include "centralDir.h"
 #include "localFileHeader.h"
+#include <QString>
+#include <list>
+#include "FileNode.h"
 
 using namespace std;
 
 class readZIP
 {
 public:
-	end_Central_Dir ECDir;
-	central_Dir CDir;
-	localFileHeader LFH;
+    end_Central_Dir ECDir;
+    central_Dir CDir;
+    localFileHeader LFH;
+    list<FileNode>fl;
 
-	ifstream file;
-	void openFile(string);
-	void readFile();
+    ifstream file;
+    void openFile(string);
+    void readFile();
 };
 
-#endif
-
+#endif // READZIP_H
