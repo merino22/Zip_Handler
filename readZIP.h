@@ -24,6 +24,7 @@ public:
     ifstream file;
     void openFile(string);
     void readFile();
+    string setTimeDate();
 };
 
 #endif // READZIP_H

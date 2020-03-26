@@ -1,5 +1,7 @@
 #include "readZIP.h"
 #include <list>
+
+#pragma warning ( disable:4996 )
 void readZIP::openFile(string filename)
 {
     file.open(filename, ios::binary);
@@ -20,8 +22,8 @@ void readZIP::readFile()
     int pos = end - 22;
     file.seekg(pos);
 
+    //Extract End of Central Directory
     file.read((char*)&ECDir.EOCDBuffer, 22);
-
     ECDir.unpack();
     ECDir.comment = new char[ECDir.commentSize + 1];
     file.read(ECDir.comment, ECDir.commentSize);
@@ -29,7 +31,7 @@ void readZIP::readFile()
 
     ECDir.printHeader();
 
-    //file.seekg(ECDir.offsetCentralDir);
+    //Extract Central Directory Headers
     cdirpos = ECDir.offsetCentralDir;
     for (int i = 0; i < ECDir.numRecords; i++)
     {
@@ -53,10 +55,15 @@ void readZIP::readFile()
 
         CDir.printHeader();
 
+        //Set Date & Time to DOS Format
+        string dateTime = "";
+        dateTime = setTimeDate();
+        cout << "New Date: " << dateTime << endl;
+        cdirpos = file.tellg();
+
         //Add Atributes to FileNode
         node->name = CDir.filename;
-        node->time = CDir.timeMod;
-        node->date = CDir.dateMod;
+        node->dateTime = dateTime;
         node->compMethod = CDir.compression;
         node->uncompressedSize = CDir.uncompSize;
         node->compressedSize = CDir.compSize;
@@ -64,6 +71,7 @@ void readZIP::readFile()
         node->offset = CDir.offsetLocalFileHeader;
         fl.push_back(*node);
 
+        //Extract Local File Headers
         cdirpos = file.tellg();
 
         file.seekg(CDir.offsetLocalFileHeader);
@@ -86,4 +94,59 @@ void readZIP::readFile()
     }
 
     file.close();
+}
+
+string readZIP::setTimeDate()
+{
+     string newStr;
+
+         int day = 0, month = 0, year = 0;
+         day = (CDir.dateMod & 0x1F);
+         if (day < 10)
+         {
+             newStr += '0';
+         }
+         newStr += to_string(day);
+         newStr += '/';
+
+         month = (((CDir.dateMod) >> 5) & 0x0F);
+         if (month < 10)
+         {
+             newStr += '0';
+         }
+         newStr += to_string(month);
+         newStr += '/';
+
+         year = ((CDir.dateMod >> 9) & 0x7F) + 1980;
+         if (year < 10)
+         {
+             newStr += '0';
+         }
+         newStr += to_string(year);
+         newStr += ' ';
+
+         int sec = 0, min = 0, hours = 0;
+         hours = CDir.timeMod >> 11;
+         if (hours < 10)
+         {
+             newStr += '0';
+         }
+         newStr += to_string(hours);
+         newStr += ':';
+
+         min = (CDir.timeMod >> 5) & 0x3F;
+         if (min < 10)
+         {
+             newStr += '0';
+         }
+         newStr += to_string(min);
+         newStr += ':';
+
+         sec = (CDir.timeMod & 0x1F) * 2;
+         if (sec < 10)
+         {
+             newStr += '0';
+         }
+         newStr += to_string(sec);
+         return newStr;
 }

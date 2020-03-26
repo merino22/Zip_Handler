@@ -2,6 +2,7 @@
 #define FILENODE_H
 
 #include <inttypes.h>
+#include<string>
 
 using namespace std;
 
@@ -9,8 +10,7 @@ class FileNode
 {
 public:
     char* name;
-    uint16_t time;
-    uint16_t date;
+    string dateTime;
     uint16_t compMethod;
     int uncompressedSize;
     int compressedSize;
