@@ -9,12 +9,12 @@ using namespace std;
 class FileNode
 {
 public:
-    char* name;
+    string name;
     string dateTime;
     uint16_t compMethod;
     int uncompressedSize;
     int compressedSize;
-    int CRC32;
+    string CRC32;
     int offset;
 };
 

@@ -15,6 +15,7 @@ PathDialog::~PathDialog()
 
 void PathDialog::on_buttonBox_accepted()
 {
+
     accept();
 }
 

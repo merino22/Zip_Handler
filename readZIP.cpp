@@ -59,15 +59,22 @@ void readZIP::readFile()
         string dateTime = "";
         dateTime = setTimeDate();
         cout << "New Date: " << dateTime << endl;
-        cdirpos = file.tellg();
+        //cdirpos = file.tellg();
 
+        //Set filenames
+        string fname = setFilename();
+        cout << "New Filename: " << fname << endl;
+
+        //Set CRC-32 to Hexadecimal value
+        string crcHex = setCRC();
+        cout << "New CRC-32: " << crcHex << endl;
         //Add Atributes to FileNode
-        node->name = CDir.filename;
+        node->name = fname;
         node->dateTime = dateTime;
         node->compMethod = CDir.compression;
         node->uncompressedSize = CDir.uncompSize;
         node->compressedSize = CDir.compSize;
-        node->CRC32 = CDir.CRC32;
+        node->CRC32 = crcHex;
         node->offset = CDir.offsetLocalFileHeader;
         fl.push_back(*node);
 
@@ -149,4 +156,47 @@ string readZIP::setTimeDate()
          }
          newStr += to_string(sec);
          return newStr;
+}
+
+string readZIP::setFilename()
+{
+    string name = CDir.filename;
+        string tmp;
+        int size = name.size();
+        bool check = false;
+
+        if (name.at(size-1) == '/')
+        {
+            size = size - 1;
+            for (int i = 0; i < size; i++)
+            {
+                tmp += name.at(i);
+            }
+            return tmp;
+        }
+        else
+        {
+            for (int i = 0; i < size; i++)
+            {
+                if (check == true)
+                {
+                    tmp += name.at(i);
+                }
+
+                if (name.at(i) == '/')
+                {
+                    check = true;
+                }
+            }
+            return tmp;
+        }
+}
+
+string readZIP::setCRC()
+{
+    stringstream sstream;
+        sstream << hex << CDir.CRC32;
+        string result = sstream.str();
+
+        return result;
 }

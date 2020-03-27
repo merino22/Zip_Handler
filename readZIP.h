@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include <sstream>
 #include "endCentralDir.h"
 #include "centralDir.h"
 #include "localFileHeader.h"
@@ -25,6 +26,8 @@ public:
     void openFile(string);
     void readFile();
     string setTimeDate();
+    string setFilename();
+    string setCRC();
 };
 
 #endif // READZIP_H

@@ -8,10 +8,10 @@ Widget::Widget(QWidget *parent)
     , ui(new Ui::Widget)
 {
     QStringList titles;
-    titles << "Name" << "Size" << "Packed" << "Type" << "Modified" << "CRC-32";
+    titles << "Name" << "Size" << "Packed" << "Modified" << "CRC-32";
     ui->setupUi(this);
     setWindowTitle("AM_ZIP_DEMO");
-    ui->treeWidget->setColumnCount(6);
+    ui->treeWidget->setColumnCount(5);
     ui->treeWidget->setHeaderLabels(titles);
 }
 
@@ -33,6 +33,7 @@ void Widget::on_pushButton_clicked()
     {
         return;
     }
+    ui->treeWidget->clear();
     std::string path2 = pathObj.getPath().toLocal8Bit().constData();
     finalPath = pathExt + path2;
 
@@ -44,32 +45,27 @@ void Widget::on_pushButton_clicked()
 
     list<FileNode>::iterator it;
     QTreeWidgetItem *item;
-    int pos = 0;
-    string tmpName;
+
     for(it = obj.fl.begin(); it != obj.fl.end(); ++it)
     {
-        tmpName = string((*it).name);
-        pos = tmpName.size();
-        if(tmpName.at(pos-1) == '/')
+        if((*it).uncompressedSize == 0)
         {
             item = new QTreeWidgetItem(ui->treeWidget);
-            item->setText(0, QString::fromStdString(tmpName));
+            item->setText(0, QString::fromStdString((*it).name));
             item->setText(1, QString::number((*it).uncompressedSize));
             item->setText(2, QString::number((*it).compressedSize));
-            item->setText(3, QString::number(strlen((*it).name)));
-            item->setText(4, QString::fromStdString((*it).dateTime));
-            item->setText(5, QString::number((*it).CRC32));
+            item->setText(3, QString::fromStdString((*it).dateTime));
+            item->setText(4, QString::fromStdString((*it).CRC32));
             ui->treeWidget->addTopLevelItem(item);
         }
         else
         {
             QTreeWidgetItem *item2 = new QTreeWidgetItem();
-            item2->setText(0, (*it).name);
+            item2->setText(0, QString::fromStdString((*it).name));
             item2->setText(1, QString::number((*it).uncompressedSize));
             item2->setText(2, QString::number((*it).compressedSize));
-            item2->setText(3,  QString::number(strlen((*it).name)));
-            item2->setText(4, QString::fromStdString((*it).dateTime));
-            item2->setText(5, QString::number((*it).CRC32));
+            item2->setText(3, QString::fromStdString((*it).dateTime));
+            item2->setText(4, QString::fromStdString((*it).CRC32));
             item->addChild(item2);
         }
     }
@@ -82,9 +78,8 @@ void Widget::addRoot(QString name, int sizeUncomp, int sizeComp, QString type, i
     item->setText(0, name);
     item->setText(1, QString::number(sizeUncomp));
     item->setText(2, QString::number(sizeComp));
-    item->setText(3, type);
-    item->setText(4, QString::number(time));
-    item->setText(5, QString::number(CRC));
+    item->setText(3, QString::number(time));
+    item->setText(4, QString::number(CRC));
     ui->treeWidget->addTopLevelItem(item);
 }
 
@@ -94,8 +89,7 @@ void Widget::addChild(QTreeWidgetItem *parent,  QString name, int sizeUncomp, in
     item->setText(0, name);
     item->setText(1, QString::number(sizeUncomp));
     item->setText(2, QString::number(sizeComp));
-    item->setText(3, type);
-    item->setText(4, QString::number(time));
-    item->setText(5, QString::number(CRC));
+    item->setText(3, QString::number(time));
+    item->setText(4, QString::number(CRC));
     parent->addChild(item);
 }
