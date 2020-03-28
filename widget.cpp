@@ -25,7 +25,7 @@ void Widget::on_pushButton_clicked()
 {
     PathDialog pathObj;
     pathObj.setWindowTitle("Path Input Window");
-    string pathExt = "C:\\Users\\aaron\\source\\repos\\EstruII_ZipHandler\\EstruII_ZipHandler\\";
+    string pathExt = "/home/merino/";
     string finalPath = "";
     int result = pathObj.exec();
 
@@ -92,4 +92,9 @@ void Widget::addChild(QTreeWidgetItem *parent,  QString name, int sizeUncomp, in
     item->setText(3, QString::number(time));
     item->setText(4, QString::number(CRC));
     parent->addChild(item);
+}
+
+void Widget::on_extractButton_clicked()
+{
+
 }

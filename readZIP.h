@@ -11,6 +11,7 @@
 #include <QString>
 #include <list>
 #include "FileNode.h"
+#include "dataDescriptor.h"
 
 using namespace std;
 
@@ -20,6 +21,7 @@ public:
     end_Central_Dir ECDir;
     central_Dir CDir;
     localFileHeader LFH;
+    Descriptor desc;
     list<FileNode>fl;
 
     ifstream file;

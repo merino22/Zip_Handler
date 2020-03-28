@@ -92,12 +92,18 @@ void readZIP::readFile()
         file.read(LFH.extra, LFH.extraSize);
         LFH.extra[LFH.extraSize] = '\0';
 
-        int readData = LFH.compSize - LFH.extraSize;
+        int readData = LFH.compSize;
         LFH.data = new char[readData + 1];
         file.read(LFH.data, readData);
         LFH.data[readData] = '\0';
         cout << "========= Local File Header " << i + 1 << " =========" << endl;
         LFH.printHeader();
+
+        if(LFH.bitFlag == 8)
+        {
+            file.read((char*)&desc.descBuffer, 12);
+            desc.printDescriptor();
+        }
     }
 
     file.close();
