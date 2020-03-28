@@ -28,6 +28,7 @@ public:
     char* data;
     void unpack();
     void printHeader();
+    void infoToFile();
 };
 
 #endif // LOCALFILEHEADER_H

@@ -1,5 +1,5 @@
 #include "endCentralDir.h"
-
+#include <fstream>
 void end_Central_Dir::unpack()
 {
     char* buff = EOCDBuffer;
@@ -30,4 +30,33 @@ void end_Central_Dir::printHeader()
     cout << "Offset of Central Dir: " << offsetCentralDir << endl;
     cout << "Comment Size: " << commentSize << endl;
     cout << "Comment: " << comment << endl;
+}
+
+void end_Central_Dir::infoToFile()
+{
+    char sig[4];
+    //sig[4] = '\0';
+    memcpy(sig, signature, 4);
+
+    fstream file;
+    file.open("/home/merino/Aaron/fileInfo.txt", ios::trunc | ios::out);
+    if(file.fail())
+    {
+        cout << "Could not open Info file" << endl;
+        return;
+    }
+
+    file << "===============| End of Central Directory |===============";
+    file << "\nSignature: " << sig[0] << sig[1] << (int)sig[2] << (int)sig[3];
+    file << "\nDisk Number: " << diskNumber;
+    file << "\nDisk of Start Central Directory: " << diskStartCentralDir;
+    file << "\nNumber of Records: " << numRecords;
+    file << "\nTotal number of Records: " << numRecords;
+    file << "\nSize of Central Dir: " << sizeCentralDir;
+    file << "\nOffset of Central Dir: " << offsetCentralDir;
+    file << "\nComment Size: " << commentSize;
+    file << "\nComment: " << comment;
+    file << "\n\n";
+    file.close();
+
 }

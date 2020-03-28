@@ -25,8 +25,8 @@ public:
     list<FileNode>fl;
 
     ifstream file;
-    void openFile(string);
-    void readFile();
+    bool openFile(string);
+    bool readFile();
     string setTimeDate();
     string setFilename();
     string setCRC();

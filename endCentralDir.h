@@ -27,6 +27,7 @@ public:
 
     void unpack();
     void printHeader();
+    void infoToFile();
 };//22 bytes
 
 #endif // ENDCENTRALDIR_H

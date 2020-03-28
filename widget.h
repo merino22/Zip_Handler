@@ -6,7 +6,9 @@
 #include <QtGui>
 #include <QTreeWidgetItem>
 #include <QTreeWidget>
-
+#include "readZIP.h"
+#include "pathdialog.h"
+#include "archiveinfodialog.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
 QT_END_NAMESPACE
@@ -15,16 +17,21 @@ class Widget : public QWidget
 {
     Q_OBJECT
 
-    void addRoot(QString name, int sizeUncomp, int sizeComp, QString type, int time, int CRC);
-    void addChild(QTreeWidgetItem *parent, QString name, int sizeUncomp, int sizeComp, QString type, int time, int CRC);
+    void setLast(bool check, list<FileNode>::iterator it, QTreeWidget *itm);
 public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
-
+    readZIP obj;
+    PathDialog pathObj;
+    ArchiveInfoDialog info_Obj;
 private slots:
     void on_pushButton_clicked();
 
     void on_extractButton_clicked();
+
+    void on_extractZIP_clicked();
+
+    void on_archInfo_clicked();
 
 private:
     Ui::Widget *ui;

@@ -13,8 +13,8 @@ public:
     char descBuffer[12];
 
     uint32_t CRC32;
-    int compSize;
-    int uncompSize;
+    uint32_t compSize;
+    uint32_t uncompSize;
 
     void unpack();
     void printDescriptor();

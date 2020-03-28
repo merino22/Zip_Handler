@@ -16,6 +16,7 @@ public:
     int compressedSize;
     string CRC32;
     int offset;
+    string checkPC;
 };
 
 #endif // FILENODE_H

@@ -37,6 +37,7 @@ public:
 
     void unpack();
     void printHeader();
+    void infoToFile();
 };
 
 #endif // CENTRALDIR_H

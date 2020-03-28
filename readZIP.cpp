@@ -1,21 +1,22 @@
 #include "readZIP.h"
 #include <list>
+#include "JlCompress.h"
 
 #pragma warning ( disable:4996 )
-void readZIP::openFile(string filename)
+bool readZIP::openFile(string filename)
 {
     file.open(filename, ios::binary);
-
     if (file.fail())
     {
         cout << "Could not open ZIP file." << endl;
-        return;
+        return false;
     }
-
+    return true;
 }
 
-void readZIP::readFile()
+bool readZIP::readFile()
 {
+    //Position pointer to 22 bytes from eof
     int cdirpos = 0;
     file.seekg(0, ios_base::end);
     int end = file.tellg();
@@ -30,12 +31,18 @@ void readZIP::readFile()
     ECDir.comment[ECDir.commentSize] = '\0';
 
     ECDir.printHeader();
+    ECDir.infoToFile();//Send EOCDir data Archive info
+
+    //Check if compression is supported(deflate)
+    if(strcmp(ECDir.signature, "PK\x5\x6") != 0)
+    {
+        return false;
+    }
 
     //Extract Central Directory Headers
     cdirpos = ECDir.offsetCentralDir;
     for (int i = 0; i < ECDir.numRecords; i++)
     {
-        FileNode *node = new FileNode;
 
         file.seekg(cdirpos);
         file.read((char*)&CDir.centralDirBuffer, 46);
@@ -54,21 +61,20 @@ void readZIP::readFile()
         CDir.fileComment[CDir.comment_Size] = '\0';
 
         CDir.printHeader();
+        CDir.infoToFile();//Send CDir data to Archive Info
 
         //Set Date & Time to DOS Format
         string dateTime = "";
         dateTime = setTimeDate();
-        cout << "New Date: " << dateTime << endl;
-        //cdirpos = file.tellg();
 
         //Set filenames
         string fname = setFilename();
-        cout << "New Filename: " << fname << endl;
 
         //Set CRC-32 to Hexadecimal value
         string crcHex = setCRC();
-        cout << "New CRC-32: " << crcHex << endl;
+
         //Add Atributes to FileNode
+        FileNode *node = new FileNode;
         node->name = fname;
         node->dateTime = dateTime;
         node->compMethod = CDir.compression;
@@ -76,7 +82,8 @@ void readZIP::readFile()
         node->compressedSize = CDir.compSize;
         node->CRC32 = crcHex;
         node->offset = CDir.offsetLocalFileHeader;
-        fl.push_back(*node);
+        node->checkPC = CDir.filename;
+        fl.push_back(*node);//Add node to list
 
         //Extract Local File Headers
         cdirpos = file.tellg();
@@ -98,7 +105,9 @@ void readZIP::readFile()
         LFH.data[readData] = '\0';
         cout << "========= Local File Header " << i + 1 << " =========" << endl;
         LFH.printHeader();
+        LFH.infoToFile();//Send LFH data to Archive Info
 
+        //Read Data Descriptor if bit 3 of Bitflag is set
         if(LFH.bitFlag == 8)
         {
             file.read((char*)&desc.descBuffer, 12);
@@ -107,6 +116,7 @@ void readZIP::readFile()
     }
 
     file.close();
+    return true;
 }
 
 string readZIP::setTimeDate()

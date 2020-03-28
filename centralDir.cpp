@@ -1,5 +1,5 @@
 #include "centralDir.h"
-
+#include <fstream>
 void central_Dir::unpack()
 {
     char* buff = centralDirBuffer;
@@ -37,8 +37,8 @@ void central_Dir::printHeader()
     cout << "Time last Modified: " << timeMod << endl;
     cout << "Date last Modified: " << dateMod << endl;
     cout << "CRC-32: " << CRC32 << endl;
-    cout << "Compression Size: " << compSize << endl;
-    cout << "Uncompression Size: " << uncompSize << endl;
+    cout << "Compressed Size: " << compSize << endl;
+    cout << "Uncompressed Size: " << uncompSize << endl;
     cout << "Filename Size: " << fileName_Size << endl;
     cout << "Extra Field Size: " << extra_Size << endl;
     cout << "Comment Size: " << comment_Size << endl;
@@ -49,4 +49,43 @@ void central_Dir::printHeader()
     cout << "Filename: " << filename << endl;
     cout << "Extra Field: " << extraField << endl;
     cout << "File Comment: " << fileComment << endl;
+}
+
+void central_Dir::infoToFile()
+{
+    char sig[4];
+    memcpy(sig, signature, 4);
+
+    fstream file;
+    file.open("/home/merino/Aaron/fileInfo.txt", ios::out | ios::app);
+    if(file.fail())
+    {
+        cout << "Could not open Info file" << endl;
+        return;
+    }
+
+    file << "===============| Central Directory |===============";
+    file << "\nSignature: " << sig[0] << sig[1] << (int)sig[2] << (int)sig[3];
+    file << "\nVersion: " << version;
+    file << "\nVersion Extract: " << verExtract;
+    file << "\nBit Flag: " << bitFlag;
+    file << "\nCompression: " << compression;
+    file << "\nTime last Modified: " << timeMod;
+    file << "\nDate last Modified: " << dateMod;
+    file << "\nCRC-32: " << CRC32;
+    file << "\nCompressed Size: " << compSize;
+    file << "\nUncompressed Size: " << uncompSize;
+    file << "\nFilename Size: " << fileName_Size;
+    file << "\nExtra Field Size: " << extra_Size;
+    file << "\nComment Size: " << comment_Size;
+    file << "\nDisk Number: " << diskNumber;
+    file << "\nInternal File Attributes: " << interFileAtri;
+    file << "\nExternal File Attributes: " << extFileAtri;
+    file << "\nLocal File Header Offset: " << offsetLocalFileHeader;
+    file << "\nFilename: " << filename;
+    file << "\nExtra Field: " << extraField;
+    file << "\nFile Comment: " << fileComment;
+    file << "\n\n";
+    file.close();
+
 }
