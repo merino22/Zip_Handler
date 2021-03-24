@@ -1,2 +1,2 @@
 # Zip_Handler
-Application that reads all entries in zip files and extracts them if requested
+Qt Creator Application in c/c++ for extraction of single files, directories or entire zip(tree-structured extraction). Libraries used(zlib, quazip)
